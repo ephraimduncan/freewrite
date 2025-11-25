@@ -1,0 +1,451 @@
+/* Lato Font */
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* CSS Custom Properties for Theming */
+:root {
+    --bg-color: #ffffff;
+    --text-color: rgb(51, 51, 51);
+    --text-light: rgb(230, 230, 230);
+    --nav-text: #808080;
+    --nav-text-hover: #000000;
+    --placeholder-color: rgba(128, 128, 128, 0.5);
+    --sidebar-bg: #ffffff;
+    --entry-hover-bg: rgba(128, 128, 128, 0.05);
+    --entry-selected-bg: rgba(128, 128, 128, 0.1);
+    --separator-color: #808080;
+    --delete-color: #ff0000;
+    --popover-bg: #f5f5f5;
+    --popover-text: #000000;
+}
+
+[data-theme="dark"] {
+    --bg-color: #000000;
+    --text-color: rgb(230, 230, 230);
+    --nav-text: rgba(128, 128, 128, 0.8);
+    --nav-text-hover: #ffffff;
+    --placeholder-color: rgba(128, 128, 128, 0.6);
+    --sidebar-bg: #000000;
+    --entry-hover-bg: rgba(128, 128, 128, 0.05);
+    --entry-selected-bg: rgba(128, 128, 128, 0.1);
+    --popover-bg: #2d2d2d;
+    --popover-text: #ffffff;
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* App Container */
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: var(--bg-color);
+    overflow: hidden;
+}
+
+/* Editor Container */
+.editor-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    position: relative;
+}
+
+.editor-container::-webkit-scrollbar {
+    display: none;
+}
+
+.editor-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Text Editor - Quill Integration */
+.editor {
+    width: 100%;
+    max-width: 650px;
+    min-height: 100%;
+}
+
+/* Quill Container */
+.ql-container {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    border: none !important;
+}
+
+.ql-container.ql-snow {
+    border: none !important;
+}
+
+/* Quill Editor */
+.ql-editor {
+    padding: 0;
+    padding-bottom: 68px;
+    min-height: 100%;
+    color: var(--text-color);
+    background-color: transparent;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    caret-color: var(--text-color);
+    overflow-y: auto;
+}
+
+/* Hide scrollbar on Quill editor and container */
+.ql-editor::-webkit-scrollbar,
+.ql-container::-webkit-scrollbar {
+    display: none;
+}
+
+.ql-editor,
+.ql-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Quill Placeholder Styling */
+.ql-editor.ql-blank::before {
+    color: var(--placeholder-color);
+    font-style: normal;
+    left: 0;
+    right: 0;
+}
+
+/* Hide Quill Toolbar (defensive) */
+.ql-toolbar {
+    display: none !important;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: var(--bg-color);
+    border-top: 1px solid transparent;
+    height: 68px;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.bottom-nav.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: var(--nav-text);
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-btn:hover {
+    color: var(--nav-text-hover);
+}
+
+.nav-separator {
+    color: var(--separator-color);
+    font-size: 13px;
+    user-select: none;
+}
+
+.theme-icon,
+.history-icon {
+    font-size: 16px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    border-left: 1px solid rgba(128, 128, 128, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.2s ease-in-out;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidebar.hidden {
+    width: 0;
+    border-left: none;
+}
+
+.sidebar-header {
+    padding: 12px 16px;
+    cursor: pointer;
+}
+
+.sidebar-header:hover .sidebar-title span:first-child,
+.sidebar-header:hover .external-icon {
+    color: var(--nav-text-hover);
+}
+
+.sidebar-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--nav-text);
+    transition: color 0.2s ease;
+}
+
+.external-icon {
+    font-size: 10px;
+    color: var(--nav-text);
+    transition: color 0.2s ease;
+}
+
+.storage-path {
+    font-size: 10px;
+    color: var(--separator-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Entries List */
+.entries-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.entries-list::-webkit-scrollbar {
+    display: none;
+}
+
+.entries-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.entry-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.entry-item:hover {
+    background-color: var(--entry-hover-bg);
+}
+
+.entry-item.selected {
+    background-color: var(--entry-selected-bg);
+}
+
+.entry-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.entry-preview {
+    font-size: 13px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.entry-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.entry-item:hover .entry-actions {
+    opacity: 1;
+}
+
+.entry-action-btn {
+    background: none;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px;
+    color: var(--nav-text);
+    transition: color 0.2s ease;
+}
+
+.entry-action-btn.export:hover {
+    color: var(--nav-text-hover);
+}
+
+.entry-action-btn.delete:hover {
+    color: var(--delete-color);
+}
+
+.entry-date {
+    font-size: 12px;
+    color: var(--separator-color);
+}
+
+/* Chat Popover */
+.chat-popover {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    min-width: 120px;
+    max-width: 250px;
+    background-color: var(--popover-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.chat-popover.hidden {
+    display: none;
+}
+
+.chat-content {
+    padding: 0;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--popover-text);
+    line-height: 1.4;
+}
+
+.chat-button {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--popover-text);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.chat-button:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.chat-divider {
+    height: 1px;
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Fullscreen */
+.app.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editor {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .nav-section {
+        gap: 4px;
+    }
+
+    .nav-btn {
+        font-size: 11px;
+        padding: 2px 4px;
+    }
+
+    .sidebar {
+        width: 250px;
+    }
+
+    .sidebar.hidden {
+        width: 0;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
