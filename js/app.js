@@ -114,12 +114,23 @@ class FreewriteApp {
 
         document.getElementById('chat-btn').addEventListener('click', () => {
             const content = this.editor.getContent();
+            const trimmed = content.trim();
+            const MIN_ENTRY_LENGTH = 350;
+            const WELCOME_MESSAGE_START = "hi. my name is farza.";
+
+            if (trimmed.length < MIN_ENTRY_LENGTH || trimmed.toLowerCase().startsWith(WELCOME_MESSAGE_START)) {
+                this.showChatTooltip();
+                return;
+            }
+
             this.aiChat.toggle(content);
         });
 
+        const chatBtn = document.getElementById('chat-btn');
+        const chatPopover = document.getElementById('chat-popover');
+
         document.addEventListener('click', (e) => {
-            const chatBtn = document.getElementById('chat-btn');
-            const chatPopover = document.getElementById('chat-popover');
+            if (!this.aiChat.isVisible()) return;
 
             if (!chatBtn.contains(e.target) && !chatPopover.contains(e.target)) {
                 this.aiChat.hide();
@@ -425,6 +436,24 @@ class FreewriteApp {
         }
     }
 
+    showChatTooltip() {
+        const tooltip = document.getElementById('chat-tooltip');
+        tooltip.classList.remove('hidden');
+        tooltip.offsetHeight;
+        tooltip.classList.add('visible');
+
+        if (this.chatTooltipTimeout) {
+            clearTimeout(this.chatTooltipTimeout);
+        }
+
+        this.chatTooltipTimeout = setTimeout(() => {
+            tooltip.classList.remove('visible');
+            setTimeout(() => {
+                tooltip.classList.add('hidden');
+            }, 150);
+        }, 2000);
+    }
+
     toggleTheme() {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
         this.applyTheme();
@@ -437,10 +466,12 @@ class FreewriteApp {
 
         if (this.theme === 'dark') {
             root.setAttribute('data-theme', 'dark');
-            themeIcon.textContent = '☀';
+            themeIcon.classList.remove('ti-moon');
+            themeIcon.classList.add('ti-sun');
         } else {
             root.setAttribute('data-theme', 'light');
-            themeIcon.textContent = '☾';
+            themeIcon.classList.remove('ti-sun');
+            themeIcon.classList.add('ti-moon');
         }
     }
 

@@ -50,6 +50,7 @@ export class SidebarManager {
         const entryDiv = document.createElement('div');
         entryDiv.className = 'entry-item';
         entryDiv.dataset.entryId = entry.id;
+        entryDiv.title = 'Click to select this entry';
 
         if (entry.id === this.selectedEntryId) {
             entryDiv.classList.add('selected');
@@ -71,8 +72,10 @@ export class SidebarManager {
 
         const exportBtn = document.createElement('button');
         exportBtn.className = 'entry-action-btn export';
-        exportBtn.textContent = '↓';
-        exportBtn.title = 'Export as PDF';
+        const exportIcon = document.createElement('i');
+        exportIcon.className = 'ti ti-download';
+        exportBtn.appendChild(exportIcon);
+        exportBtn.title = 'Export entry as PDF';
         exportBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (this.onEntryExport) {
@@ -83,7 +86,9 @@ export class SidebarManager {
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'entry-action-btn delete';
-        deleteBtn.textContent = '🗑';
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'ti ti-trash';
+        deleteBtn.appendChild(deleteIcon);
         deleteBtn.title = 'Delete entry';
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();

@@ -157,6 +157,19 @@ export class AIChatManager {
     divider2.className = "chat-divider";
     this.content.appendChild(divider2);
 
+    const geminiButton = document.createElement("button");
+    geminiButton.className = "chat-button";
+    geminiButton.textContent = "Gemini";
+    geminiButton.addEventListener("click", () => {
+      this.openGemini();
+      this.hide();
+    });
+    this.content.appendChild(geminiButton);
+
+    const divider3 = document.createElement("div");
+    divider3.className = "chat-divider";
+    this.content.appendChild(divider3);
+
     const copyButton = document.createElement("button");
     copyButton.className = "chat-button";
     copyButton.textContent = this.didCopy ? "Copied!" : "Copy Prompt";
@@ -183,6 +196,15 @@ export class AIChatManager {
     const encodedText = encodeURIComponent(fullText);
     const url = `https://claude.ai/new?q=${encodedText}`;
 
+    window.open(url, "_blank");
+  }
+
+  openGemini() {
+    const trimmed = this.currentText.trim();
+    const fullText = AI_CHAT_PROMPT + "\n\n" + trimmed;
+    const encodedText = encodeURIComponent(fullText);
+    const url = `https://gemini.google.com/app?hl=en`;
+    this.copyPromptToClipboard();
     window.open(url, "_blank");
   }
 
